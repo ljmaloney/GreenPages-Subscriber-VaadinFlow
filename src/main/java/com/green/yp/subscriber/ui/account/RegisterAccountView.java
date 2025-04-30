@@ -175,9 +175,6 @@ public class RegisterAccountView extends AbstractVerticalLayout {
             } else {
                 AbstractFormLayout nextComponent = accountForms.get(currentIndex + 1);
                 nextTab(nextComponent);
-//                tabSheet.getTab(component).setSelected(false);
-//                nextComponent.setVisible(true);
-//                component.setVisible(false);
                 if (nextComponent == accountForms.get(accountForms.size() - 1)) {
                     clickEvent.getSource().setVisible(false);
                     registerButton.setVisible(true);
@@ -187,9 +184,6 @@ public class RegisterAccountView extends AbstractVerticalLayout {
     }
 
     private void nextTab(FormLayout tabForm) {
-//        Tab tab = tabSheet.getTab(tabForm);
-//        tabForm.setVisible(true);
-//        tabSheet.setSelectedTab(tab);
         tabSheet.setSelectedIndex(tabSheet.getSelectedIndex() + 1);
     }
 
@@ -199,6 +193,7 @@ public class RegisterAccountView extends AbstractVerticalLayout {
     }
 
     private void registerAccount(ClickEvent<Button> registerEvent) {
+        log.info("Registering account");
 //        boolean isInvalidForm = accountForms.stream()
 //                .anyMatch(acct -> Boolean.FALSE.booleanValue() == acct.validateForm());
 //

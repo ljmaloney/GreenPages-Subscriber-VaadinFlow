@@ -5,8 +5,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.UUID;
+
+import lombok.Builder;
 import lombok.NonNull;
 
+@Builder
 public record UserCredentialsRequest(
     UUID producerContactId,
     @NonNull @NotBlank String firstName,

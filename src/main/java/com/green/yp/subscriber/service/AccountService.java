@@ -7,6 +7,7 @@ import com.green.yp.api.apitype.common.ResponseApi;
 import com.green.yp.api.apitype.producer.BusinessDetailsRequest;
 import com.green.yp.api.apitype.producer.LocationRequest;
 import com.green.yp.api.apitype.producer.ProducerRequest;
+import com.green.yp.api.apitype.producer.UserCredentialsRequest;
 import com.green.yp.api.apitype.producer.enumeration.InvoiceCycleType;
 import com.green.yp.subscriber.integration.account.AccountClient;
 import java.util.UUID;
@@ -60,6 +61,17 @@ public class AccountService {
         UpdateAccountRequest updateRequest = UpdateAccountRequest.builder()
                 .producerId(producerId)
                 .primaryLocation(locationRequest)
+                .build();
+
+        ResponseApi<AccountResponse> response = accountClient.updateAccount(updateRequest);
+
+        return response.getResponse();
+    }
+
+    public AccountResponse updateUserCredentials(UUID producerId, UserCredentialsRequest credentialsRequest){
+        UpdateAccountRequest updateRequest = UpdateAccountRequest.builder()
+                .producerId(producerId)
+                .masterUserCredentials(credentialsRequest)
                 .build();
 
         ResponseApi<AccountResponse> response = accountClient.updateAccount(updateRequest);

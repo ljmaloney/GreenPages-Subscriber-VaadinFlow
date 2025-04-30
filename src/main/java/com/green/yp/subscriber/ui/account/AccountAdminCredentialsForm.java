@@ -1,5 +1,6 @@
 package com.green.yp.subscriber.ui.account;
 
+import com.green.yp.api.apitype.account.AccountResponse;
 import com.green.yp.api.apitype.producer.UserCredentialsRequest;
 import com.green.yp.subscriber.service.AccountService;
 import com.green.yp.subscriber.service.UspsAddressService;
@@ -19,6 +20,8 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 public class AccountAdminCredentialsForm extends AbstractFormLayout<UserCredentialsRequest> {
+
+    private AccountService accountService;
 
     private final TextField firstNameField;
     private final TextField lastNameField;
@@ -94,11 +97,23 @@ public class AccountAdminCredentialsForm extends AbstractFormLayout<UserCredenti
     public void initialize(@NonNull ReferenceService referenceService,
                            @NonNull AccountService accountService,
                            @NonNull UspsAddressService uspsAddressService) {
-
+        this.accountService = accountService;
     }
 
     @Override
     public Optional<UserCredentialsRequest> getFormData() {
-        return Optional.empty();
+        Optional<AccountResponse> optionalResponse = (Optional<AccountResponse>) getAttribute("AccountResponse");
+        AccountResponse accountResponse = optionalResponse.get();
+        UserCredentialsRequest credentialsRequest = UserCredentialsRequest.builder()
+                .firstName(firstNameField.getValue())
+                .lastName(lastNameField.getValue())
+                .businessPhone(businessPhoneField.getValue())
+                .cellPhone(cellPhoneField.getValue())
+                .emailAddress(emailAddressField.getValue())
+                .userName(userNameField.getValue())
+                .credentials(passwordField.getValue())
+                .build();
+        accountService.updateUserCredentials(accountResponse.producer().producerId(), credentialsRequest);
+        return Optional.of(credentialsRequest);
     }
 }
