@@ -4,13 +4,13 @@ import com.green.yp.api.apitype.account.AccountResponse;
 import com.green.yp.api.apitype.account.CreateAccountRequest;
 import com.green.yp.api.apitype.account.UpdateAccountRequest;
 import com.green.yp.api.apitype.common.ResponseApi;
-import com.green.yp.api.apitype.producer.BusinessDetailsRequest;
-import com.green.yp.api.apitype.producer.LocationRequest;
-import com.green.yp.api.apitype.producer.ProducerRequest;
-import com.green.yp.api.apitype.producer.UserCredentialsRequest;
+import com.green.yp.api.apitype.producer.*;
 import com.green.yp.api.apitype.producer.enumeration.InvoiceCycleType;
 import com.green.yp.subscriber.integration.account.AccountClient;
 import java.util.UUID;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +72,17 @@ public class AccountService {
         UpdateAccountRequest updateRequest = UpdateAccountRequest.builder()
                 .producerId(producerId)
                 .masterUserCredentials(credentialsRequest)
+                .build();
+
+        ResponseApi<AccountResponse> response = accountClient.updateAccount(updateRequest);
+
+        return response.getResponse();
+    }
+
+    public AccountResponse createPrimaryContact(@NonNull @NotNull UUID producerId, ProducerContactRequest contactRequest) {
+        UpdateAccountRequest updateRequest = UpdateAccountRequest.builder()
+                .producerId(producerId)
+                .primaryContact(contactRequest)
                 .build();
 
         ResponseApi<AccountResponse> response = accountClient.updateAccount(updateRequest);

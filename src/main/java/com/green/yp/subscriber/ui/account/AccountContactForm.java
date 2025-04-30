@@ -1,5 +1,6 @@
 package com.green.yp.subscriber.ui.account;
 
+import com.green.yp.api.apitype.account.AccountResponse;
 import com.green.yp.api.apitype.producer.ProducerContactRequest;
 import com.green.yp.api.apitype.producer.enumeration.ProducerContactType;
 import com.green.yp.api.apitype.producer.enumeration.ProducerDisplayContactType;
@@ -18,7 +19,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import java.util.Optional;
 import lombok.NonNull;
 
-public class AccountContactForm extends AbstractFormLayout<ProducerContactRequest> {
+public class AccountContactForm extends AbstractFormLayout<AccountResponse> {
 
     private ReferenceService referenceService;
 
@@ -30,6 +31,7 @@ public class AccountContactForm extends AbstractFormLayout<ProducerContactReques
     private final EmailField emailAddressField;
     private final Select<ProducerContactType> contactTypeSelect;
     private final Select<ProducerDisplayContactType> displayContactSelect;
+    private AccountService accountService;
 
 
     public AccountContactForm() {
@@ -93,10 +95,24 @@ public class AccountContactForm extends AbstractFormLayout<ProducerContactReques
                            @NonNull AccountService accountService,
                            @NonNull UspsAddressService uspsAddressService) {
         this.referenceService = referenceService;
+        this.accountService = accountService;
     }
 
     @Override
-    public Optional<ProducerContactRequest> getFormData() {
-        return Optional.empty();
+    public Optional<AccountResponse> getFormData() {
+        Optional<AccountResponse> optionalResponse = (Optional<AccountResponse>) getAttribute("AccountResponse");
+        AccountResponse accountResponse = optionalResponse.get();
+        ProducerContactRequest contactRequest = ProducerContactRequest.builder()
+                .firstName(firstNameField.getValue())
+                .lastName(lastNameField.getValue())
+                .producerLocationId(accountResponse.primaryLocation().locationId())
+                .cellPhoneNumber(cellPhoneField.getValue())
+                .phoneNumber(businessPhoneField.getValue())
+                .emailAddress(emailAddressField.getValue())
+                .genericContactName(genericContactField.getValue())
+                .displayContactType(displayContactSelect.getValue())
+                .producerContactType(contactTypeSelect.getValue())
+                .build();
+        return Optional.of(accountService.createPrimaryContact(accountResponse.producer().producerId(), contactRequest));
     }
 }

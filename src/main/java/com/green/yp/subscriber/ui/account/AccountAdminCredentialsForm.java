@@ -19,7 +19,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
-public class AccountAdminCredentialsForm extends AbstractFormLayout<UserCredentialsRequest> {
+public class AccountAdminCredentialsForm extends AbstractFormLayout<AccountResponse> {
 
     private AccountService accountService;
 
@@ -101,7 +101,7 @@ public class AccountAdminCredentialsForm extends AbstractFormLayout<UserCredenti
     }
 
     @Override
-    public Optional<UserCredentialsRequest> getFormData() {
+    public Optional<AccountResponse> getFormData() {
         Optional<AccountResponse> optionalResponse = (Optional<AccountResponse>) getAttribute("AccountResponse");
         AccountResponse accountResponse = optionalResponse.get();
         UserCredentialsRequest credentialsRequest = UserCredentialsRequest.builder()
@@ -113,7 +113,6 @@ public class AccountAdminCredentialsForm extends AbstractFormLayout<UserCredenti
                 .userName(userNameField.getValue())
                 .credentials(passwordField.getValue())
                 .build();
-        accountService.updateUserCredentials(accountResponse.producer().producerId(), credentialsRequest);
-        return Optional.of(credentialsRequest);
+        return Optional.of(accountService.updateUserCredentials(accountResponse.producer().producerId(), credentialsRequest));
     }
 }
