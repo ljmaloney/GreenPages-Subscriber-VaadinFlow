@@ -67,7 +67,7 @@ public class BusinessLocationForm extends AbstractFormLayout<AccountResponse> {
         cityField.setMinLength(2);
         add(cityField, 2);
 
-        stateSelect = new Select<StateType>("State", this::stateSelected);
+        stateSelect = new Select<>("State", this::stateSelected);
         stateSelect.setItems(Arrays.asList(StateType.values()));
         stateSelect.setRequiredIndicatorVisible(true);
         stateSelect.setItemLabelGenerator(StateType::getUnabbreviated);
@@ -169,6 +169,7 @@ public class BusinessLocationForm extends AbstractFormLayout<AccountResponse> {
                 LocationRequest.builder()
                         .active(true)
                         .locationId(accountResponse.primaryLocation() != null ? accountResponse.primaryLocation().locationId() : null)
+                        .locationName("Primary Business Location")
                         .addressLine1(addressLine1Field.getValue())
                         .addressLine2(addressLine2Field.getValue())
                         .addressLine3(addressLine3Field.getValue())
