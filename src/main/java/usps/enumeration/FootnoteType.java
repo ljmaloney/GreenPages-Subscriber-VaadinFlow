@@ -1,7 +1,12 @@
 package usps.enumeration;
 
-import java.util.Arrays;
+import lombok.Getter;
+import lombok.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
+
+@Getter
 public enum FootnoteType {
 
     ZIP_CORRECTED("A",
@@ -34,8 +39,7 @@ public enum FootnoteType {
             "Zip Code Assigned for Multiple Response",
             "Multiple records were returned, but each shares the same 5-digit Zip Code."),
     ADDRESS_NOT_FOUND("F","Address Could Not Be Found in The National Directory File Database",
-            """
-                    The address, exactly as submitted, could not be found in the city, state, or Zip Code provided."""),
+            "The address, exactly as submitted, could not be found in the city, state, or Zip Code provided."),
     INFORMATION_IN_FIRM_LINE("G",
         "Information In Firm Line Used for Matching",
         """
@@ -103,10 +107,17 @@ public enum FootnoteType {
     private String code;
     private String shortDescription;
     private String message;
-    private FootnoteType(String code, String shortDescription, String message){
+
+    private FootnoteType(String code, String shortDescription, String message) {
         this.code = code;
         this.shortDescription = shortDescription;
         this.message = message;
+    }
+
+    public static List<FootnoteType> getFootnoteTypes(@NonNull String codes){
+        return Arrays.stream(FootnoteType.values())
+                .filter(type -> codes.contains(type.code))
+                .toList();
     }
 
     public static FootnoteType findType(String code){

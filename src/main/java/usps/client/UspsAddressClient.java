@@ -101,8 +101,7 @@ public class UspsAddressClient {
         String[] zipParts = new String[2];
         if ( pattern.matcher(zipCode).matches()){
             List<MatchResult> results = pattern.matcher(zipCode).results().toList();
-            zipParts[0] = results.get(0).toString();
-            zipParts[1] = results.get(1).toString();
+            zipParts = zipCode.split("-");
         }else{
             zipParts[0] = zipCode;
         }

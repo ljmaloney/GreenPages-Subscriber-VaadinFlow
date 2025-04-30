@@ -15,12 +15,15 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import usps.enumeration.FootnoteType;
 import usps.model.AddressResponse;
 
+@Slf4j
 public class BusinessLocationForm extends AbstractFormLayout<AccountResponse> {
 
     private AccountService accountService;
@@ -132,7 +135,13 @@ public class BusinessLocationForm extends AbstractFormLayout<AccountResponse> {
     }
 
     private void processValidationResponse(AddressResponse addressResponse) {
-        FootnoteType footnoteType = FootnoteType.findType(addressResponse.getFootNotes());
+        List<FootnoteType> types = FootnoteType.getFootnoteTypes(addressResponse.getFootNotes());
+        types.forEach(type ->
+            processAddressFootnote(type, addressResponse)        );
+    }
+
+    private void processAddressFootnote(FootnoteType footnoteType, AddressResponse addressResponse){
+        log.info("Address validation results for {} is {}", addressResponse, footnoteType);
         switch (footnoteType) {
             case ZIP_CORRECTED:
                 if (StringUtils.isNotBlank(addressResponse.getZip4())) {
@@ -140,24 +149,16 @@ public class BusinessLocationForm extends AbstractFormLayout<AccountResponse> {
                 } else {
                     zipCodeField.setValue(addressResponse.getZip());
                 }
-                informMessage.showMessage("Zip code updated",
-                        "Your zip code has been updated to match United States Postal Service records");
                 return;
             case CITY_STATE_SPELLING:
                 cityField.setValue(addressResponse.getCity());
                 stateSelect.setValue(StateType.parse(addressResponse.getState()));
-                informMessage.showMessage("City or State updated",
-                        "The spelling of your city and / or state has been updated to match United States Postal Service records");
                 return;
-            case ADDRESS_STANDARDIZED:
-                informMessage.showMessage("Address Verified",
-                        "Your address has been verified using United States Postal Service records");
-                return;
+            case ADDRESS_STANDARDIZED: return;
             default:
-                informMessage.setVisible(false);
                 addressConfirmMessage.showConfirmMessage("Address not Validated",
                         "The United States Postal Service wasd not able to validate your address. " +
-                                "Please review your address or click to confirm the address is correct");
+                        "Please review your address or click to confirm the address is correct");
         }
     }
 
